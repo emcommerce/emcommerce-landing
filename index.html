@@ -5,14 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Olshop Hack - Data 42.000 Produk Terlaris Shopee | emCommerce</title>
   <meta name="description" content="42.000 data produk terlaris Shopee + strategi dari seller yang sudah menghasilkan Rp2.51 Miliar dalam 3 bulan pertama 2026. Hanya Rp119.000." />
-  <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico" sizes="48x48" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#111214" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -375,6 +368,16 @@
           <p>Kompetitor kamu mungkin sudah pakai data seperti ini.</p>
           <p class="urgency-question">Pertanyaannya: kamu mau tetap nebak-nebak sampai kapan?</p>
         </div>
+        <!-- ===== QUOTA PROGRESS BAR ===== -->
+        <div class="quota-progress">
+          <p class="quota-label">77 dari 100 slot bonus April sudah terisi</p>
+          <div class="quota-track">
+            <div class="quota-fill"></div>
+          </div>
+          <p class="quota-sublabel">Sisa 23 slot lagi</p>
+        </div>
+        <!-- ===== END QUOTA PROGRESS BAR ===== -->
+
         <a href="https://lynk.id/emcommerce/BORXZyd" class="btn-primary btn-large" id="urgencyCta" target="_blank" rel="noopener">
           Miliki Olshop Hack + Semua Bonus → Rp119.000
         </a>
@@ -442,6 +445,20 @@
       <p class="footer-legal">&copy; 2026 emCommerce. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- ===== PROMO POP-UP ===== -->
+  <div class="promo-overlay" id="promoOverlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="promo-modal">
+      <button class="promo-close" id="promoClose" aria-label="Tutup">&times;</button>
+      <span class="promo-badge">Special Offer</span>
+      <h2 class="promo-headline">Diskon 30%</h2>
+      <p class="promo-sub">Pakai kode promo ini saat checkout:</p>
+      <div class="promo-code-box" id="promoCodeBox">APRILSALE</div>
+      <button class="promo-cta" id="promoCopyBtn">Copy Code</button>
+      <p class="promo-micro">Berlaku untuk pembelian bulan April 2026.</p>
+    </div>
+  </div>
+  <!-- ===== END PROMO POP-UP ===== -->
 
   <script src="assets/script.js" defer></script>
 </body>
