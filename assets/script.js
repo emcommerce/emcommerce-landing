@@ -208,7 +208,7 @@ function setupExitIntent() {
       const upDelta = upwardScrollStart - currentY;
       if (upDelta >= 100) {
         const timeOnPage = (Date.now() - pageEntryTime) / 1000;
-        if (timeOnPage >= 5) showPopup();
+        if (timeOnPage >= 3) showPopup();
       }
     } else {
       upwardScrollStart = null;
@@ -221,7 +221,7 @@ function setupExitIntent() {
   document.addEventListener('mouseleave', function(e) {
     if (e.clientY <= 0 && eligible) {
       const timeOnPage = (Date.now() - pageEntryTime) / 1000;
-      if (timeOnPage >= 5) showPopup();
+      if (timeOnPage >= 3) showPopup();
     }
   });
 
