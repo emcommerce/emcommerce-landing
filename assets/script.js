@@ -200,7 +200,7 @@ function setupExitIntent() {
     const pct = getScrollPct();
 
     if (pct > maxScrollPct) maxScrollPct = pct;
-    if (maxScrollPct >= 0.5) eligible = true;
+    if (maxScrollPct >= 0.35) eligible = true;
 
     if (eligible && currentY < lastScrollY) {
       // Scrolling up
