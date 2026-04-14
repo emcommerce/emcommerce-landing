@@ -70,6 +70,7 @@ function setupCTATracking() {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener('click', function(e) {
+      window.ctaClicked = true;
       trackInitiateCheckout(id);
       // Allow natural navigation after pixel fires
     });
@@ -156,10 +157,125 @@ function setupFAQ() {
   });
 }
 
+// ===== EXIT-INTENT POP-UP =====
+function setupExitIntent() {
+  const overlay = document.getElementById('promoOverlay');
+  const closeBtn = document.getElementById('promoClose');
+  const copyBtn = document.getElementById('promoCopyBtn');
+  if (!overlay) return;
+
+  const SESSION_KEY = 'emc_popup_shown';
+  if (sessionStorage.getItem(SESSION_KEY)) return;
+
+  let pageEntryTime = Date.now();
+  let maxScrollPct = 0;
+  let lastScrollY = window.scrollY;
+  let upwardScrollStart = null;
+  let eligible = false;
+
+  function getScrollPct() {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    return total > 0 ? window.scrollY / total : 0;
+  }
+
+  function showPopup() {
+    if (sessionStorage.getItem(SESSION_KEY)) return;
+    if (window.ctaClicked) return;
+    sessionStorage.setItem(SESSION_KEY, '1');
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+    if (typeof fbq === 'function') {
+      fbq('trackCustom', 'PromoPopupShown');
+    }
+  }
+
+  function hidePopup() {
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  // Scroll-based exit intent
+  window.addEventListener('scroll', function() {
+    const currentY = window.scrollY;
+    const pct = getScrollPct();
+
+    if (pct > maxScrollPct) maxScrollPct = pct;
+    if (maxScrollPct >= 0.5) eligible = true;
+
+    if (eligible && currentY < lastScrollY) {
+      // Scrolling up
+      if (upwardScrollStart === null) upwardScrollStart = lastScrollY;
+      const upDelta = upwardScrollStart - currentY;
+      if (upDelta >= 100) {
+        const timeOnPage = (Date.now() - pageEntryTime) / 1000;
+        if (timeOnPage >= 5) showPopup();
+      }
+    } else {
+      upwardScrollStart = null;
+    }
+
+    lastScrollY = currentY;
+  }, { passive: true });
+
+  // Desktop: traditional mouse-leave exit intent (bonus)
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY <= 0 && eligible) {
+      const timeOnPage = (Date.now() - pageEntryTime) / 1000;
+      if (timeOnPage >= 5) showPopup();
+    }
+  });
+
+  // Close handlers
+  closeBtn && closeBtn.addEventListener('click', hidePopup);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) hidePopup();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hidePopup();
+  });
+
+  // Copy code
+  copyBtn && copyBtn.addEventListener('click', function() {
+    const code = 'APRILSALE';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function() {
+        copyBtn.textContent = 'Kode Disalin!';
+        if (typeof fbq === 'function') {
+          fbq('trackCustom', 'PromoCodeCopied', { promo_code: code, discount: '30%' });
+        }
+        setTimeout(hidePopup, 1000);
+      }).catch(function() {
+        // Fallback
+        const box = document.getElementById('promoCodeBox');
+        if (box) {
+          const range = document.createRange();
+          range.selectNodeContents(box);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        copyBtn.textContent = 'Salin kode di atas';
+      });
+    } else {
+      // Fallback for older browsers
+      const box = document.getElementById('promoCodeBox');
+      if (box) {
+        const range = document.createRange();
+        range.selectNodeContents(box);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      copyBtn.textContent = 'Salin kode di atas';
+    }
+  });
+}
+
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', function() {
   setupCTATracking();
   setupScrollTracking();
   setupStickyNav();
   setupFAQ();
+  setupExitIntent();
 });
