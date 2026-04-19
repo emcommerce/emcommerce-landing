@@ -65,7 +65,17 @@ function trackProductClick(productId) {
 
 // ===== CTA TRACKING =====
 function setupCTATracking() {
-  const ctaIds = ['heroCta', 'navCta', 'paywallCta', 'valueCta'];
+  // heroCta scrolls to grid — NOT checkout
+  const heroCta = document.getElementById('heroCta');
+  if (heroCta) {
+    heroCta.addEventListener('click', function() {
+      const gridSection = document.querySelector('[aria-label="50 Hidden Gems"]');
+      if (gridSection) gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  // All other CTAs → InitiateCheckout
+  const ctaIds = ['navCta', 'paywallCta', 'valueCta'];
   ctaIds.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -74,6 +84,7 @@ function setupCTATracking() {
       trackInitiateCheckout(id);
     });
   });
+
   const downsellBtn = document.getElementById('downsellCta');
   if (downsellBtn) {
     downsellBtn.addEventListener('click', function() {
@@ -217,36 +228,88 @@ function setupExitIntent() {
   });
 }
 
-// ===== PRODUCT GRID =====
+// ===== PRODUCT GRID (progressive loading) =====
+const LOAD_TIERS = [6, 16, 30, 50];
+
 function setupProductGrid(products) {
   const grid = document.getElementById('productGrid');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
   if (!grid || !products) return;
 
-  // Render all cards
+  let allFiltered = products;
+  let visibleCount = 0;
+
+  // Build all cards (hidden initially)
   products.forEach(p => {
     const card = buildCard(p);
+    card.style.display = 'none';
     grid.appendChild(card);
   });
 
-  // Category filter
+  function getNextTier(current, total) {
+    return LOAD_TIERS.find(t => t > current && t <= total) || total;
+  }
+
+  function renderVisible(filtered, count) {
+    const allCards = grid.querySelectorAll('.product-card');
+    let shown = 0;
+    allCards.forEach(card => {
+      const inFilter = filtered.some(p => p.id == card.dataset.id);
+      if (inFilter && shown < count) {
+        card.style.display = '';
+        shown++;
+      } else {
+        card.style.display = 'none';
+        card.classList.remove('expanded');
+      }
+    });
+  }
+
+  function updateLoadMoreBtn(filtered, count) {
+    if (!loadMoreBtn) return;
+    if (count >= filtered.length) {
+      loadMoreBtn.style.display = 'none';
+      return;
+    }
+    const nextTier = getNextTier(count, filtered.length);
+    const remaining = nextTier - count;
+    loadMoreBtn.textContent = 'Lihat ' + remaining + ' lagi';
+    loadMoreBtn.style.display = '';
+  }
+
+  function applyFilter(categorySlug) {
+    collapseAll();
+    allFiltered = categorySlug === 'semua'
+      ? products
+      : products.filter(p => p.kategori_slug === categorySlug);
+    visibleCount = Math.min(6, allFiltered.length);
+    renderVisible(allFiltered, visibleCount);
+    updateLoadMoreBtn(allFiltered, visibleCount);
+  }
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function() {
+      const nextTier = getNextTier(visibleCount, allFiltered.length);
+      visibleCount = nextTier;
+      renderVisible(allFiltered, visibleCount);
+      updateLoadMoreBtn(allFiltered, visibleCount);
+      if (typeof fbq === 'function') {
+        if (visibleCount >= 50) fbq('trackCustom', 'ExpandProducts_50');
+        else if (visibleCount >= 30) fbq('trackCustom', 'ExpandProducts_30');
+        else if (visibleCount >= 16) fbq('trackCustom', 'ExpandProducts_16');
+      }
+    });
+  }
+
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', function() {
-      const slug = this.dataset.cat;
       document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
       this.classList.add('active');
-
-      // Collapse any expanded card first
-      collapseAll();
-
-      document.querySelectorAll('.product-card').forEach(card => {
-        if (slug === 'semua' || card.dataset.category === slug) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+      applyFilter(this.dataset.cat);
     });
   });
+
+  applyFilter('semua');
 }
 
 function collapseAll() {
