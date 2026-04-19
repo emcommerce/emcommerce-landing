@@ -112,7 +112,7 @@ img { max-width: 100%; height: auto; display: block; }
   padding: 16px;
   background: var(--c-bg-primary);
   margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+
 }
 .hero-card__category {
   font-size: 10px;
@@ -503,6 +503,29 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--c-text-secondary);
   margin-bottom: 14px;
   line-height: 1.5;
+}
+
+/* Load more button */
+.btn-load-more {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin: 16px auto 0;
+  padding: 14px 20px;
+  background: transparent;
+  color: var(--c-text-primary);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+}
+.btn-load-more:hover {
+  border-color: var(--c-text-primary);
+  background: var(--c-bg-secondary);
 }
 
 .grid-footer {
