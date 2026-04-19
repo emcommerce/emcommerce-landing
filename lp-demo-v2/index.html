@@ -20,7 +20,7 @@
     .hero{padding:60px 0 48px;border-bottom:1px solid var(--c-border)}
     .hero__pretag{font-size:10px;font-weight:600;letter-spacing:.8px;color:var(--c-text-tertiary);text-transform:uppercase;margin-bottom:16px;display:block}
     .hero__headline{font-size:22px;font-weight:500;line-height:1.35;letter-spacing:-.3px;margin-bottom:24px}
-    .hero-card{border:1px solid var(--c-border);border-radius:12px;padding:16px;background:#fff;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+    .hero-card{border:1px solid var(--c-border);border-radius:12px;padding:16px;background:#fff;margin-bottom:16px}
     .btn{display:block;width:100%;padding:15px 20px;border-radius:8px;font-size:15px;font-weight:600;text-align:center;transition:opacity .15s,transform .1s;letter-spacing:-.1px;font-family:var(--font)}
     .btn:active{transform:scale(.98);opacity:.9}
     .btn--primary{background:var(--c-cta-bg);color:var(--c-cta-text);border:none;cursor:pointer}
@@ -89,9 +89,9 @@
     </p>
     <span class="hero__scroll-hint">↓ Lihat 49 produk lainnya</span>
 
-    <a href="https://lynk.id/emcommerce/BORXZyd" class="btn btn--primary" id="heroCta" role="button">
+    <button type="button" class="btn btn--primary" id="heroCta">
       Coba Lihat 50 Produk Dulu
-    </a>
+    </button>
   </div>
 </section>
 
@@ -182,6 +182,9 @@
 
     <!-- Product grid — populated by JS -->
     <div class="product-grid" id="productGrid" aria-label="Daftar produk"></div>
+
+    <!-- Load more button — managed by JS -->
+    <button type="button" class="btn-load-more" id="loadMoreBtn" style="display:none;"></button>
 
     <!-- Paywall -->
     <div class="paywall" aria-label="Konten terkunci">
