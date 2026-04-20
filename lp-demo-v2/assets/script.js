@@ -65,7 +65,6 @@ function trackProductClick(productId) {
 
 // ===== CTA TRACKING =====
 function setupCTATracking() {
-  // heroCta scrolls to grid — NOT checkout
   const heroCta = document.getElementById('heroCta');
   if (heroCta) {
     heroCta.addEventListener('click', function() {
@@ -73,8 +72,6 @@ function setupCTATracking() {
       if (gridSection) gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
-
-  // All other CTAs → InitiateCheckout
   const ctaIds = ['navCta', 'paywallCta', 'valueCta'];
   ctaIds.forEach(id => {
     const el = document.getElementById(id);
@@ -84,7 +81,6 @@ function setupCTATracking() {
       trackInitiateCheckout(id);
     });
   });
-
   const downsellBtn = document.getElementById('downsellCta');
   if (downsellBtn) {
     downsellBtn.addEventListener('click', function() {
@@ -99,12 +95,10 @@ function setupCTATracking() {
 function setupScrollTracking() {
   let viewContentFired = false;
   let demoDepthFired = false;
-
   window.addEventListener('scroll', function onScroll() {
     const scrolled = window.scrollY + window.innerHeight;
     const total = document.documentElement.scrollHeight;
     const pct = scrolled / total;
-
     if (!viewContentFired && pct >= 0.5) {
       viewContentFired = true;
       if (typeof fbq === 'function') {
@@ -118,13 +112,9 @@ function setupScrollTracking() {
     }
     if (!demoDepthFired && pct >= 0.75) {
       demoDepthFired = true;
-      if (typeof fbq === 'function') {
-        fbq('trackCustom', 'DemoScrollDepth_75');
-      }
+      if (typeof fbq === 'function') fbq('trackCustom', 'DemoScrollDepth_75');
     }
-    if (viewContentFired && demoDepthFired) {
-      window.removeEventListener('scroll', onScroll);
-    }
+    if (viewContentFired && demoDepthFired) window.removeEventListener('scroll', onScroll);
   }, { passive: true });
 }
 
@@ -146,7 +136,6 @@ function setupFAQ() {
     if (!btn || !ans) return;
     btn.addEventListener('click', function() {
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
-      // close all
       document.querySelectorAll('.faq-q').forEach(b => b.setAttribute('aria-expanded', 'false'));
       document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
       if (!isOpen) {
@@ -228,7 +217,7 @@ function setupExitIntent() {
   });
 }
 
-// ===== PRODUCT GRID (progressive loading) =====
+// ===== PRODUCT GRID =====
 const LOAD_TIERS = [6, 16, 30, 50];
 
 function setupProductGrid(products) {
@@ -236,32 +225,40 @@ function setupProductGrid(products) {
   const loadMoreBtn = document.getElementById('loadMoreBtn');
   if (!grid || !products) return;
 
-  let allFiltered = products;
+  // FIX 1: Use a Map for O(1) lookup instead of .some() loop
+  let filteredIds = new Set(products.map(p => p.id));
   let visibleCount = 0;
+  let allFiltered = products;
 
-  // Build all cards (hidden initially)
+  // FIX 2: Build cards with CSS class hidden, not style.display
+  // This avoids style recalc on every show/hide
+  const fragment = document.createDocumentFragment();
   products.forEach(p => {
     const card = buildCard(p);
-    card.style.display = 'none';
-    grid.appendChild(card);
+    card.classList.add('card-hidden');
+    fragment.appendChild(card);
   });
+  grid.appendChild(fragment); // Single DOM write
 
   function getNextTier(current, total) {
     return LOAD_TIERS.find(t => t > current && t <= total) || total;
   }
 
+  // FIX 3: Batch all DOM reads first, then writes (avoid layout thrashing)
   function renderVisible(filtered, count) {
+    const filteredSet = new Set(filtered.map(p => String(p.id)));
     const allCards = grid.querySelectorAll('.product-card');
-    let shown = 0;
-    allCards.forEach(card => {
-      const inFilter = filtered.some(p => p.id == card.dataset.id);
-      if (inFilter && shown < count) {
-        card.style.display = '';
-        shown++;
-      } else {
-        card.style.display = 'none';
-        card.classList.remove('expanded');
-      }
+
+    // Single requestAnimationFrame to batch all DOM writes
+    requestAnimationFrame(() => {
+      let shown = 0;
+      allCards.forEach(card => {
+        const inFilter = filteredSet.has(card.dataset.id);
+        const shouldShow = inFilter && shown < count;
+        card.classList.toggle('card-hidden', !shouldShow);
+        if (!shouldShow) card.classList.remove('expanded');
+        if (shouldShow) shown++;
+      });
     });
   }
 
@@ -272,8 +269,7 @@ function setupProductGrid(products) {
       return;
     }
     const nextTier = getNextTier(count, filtered.length);
-    const remaining = nextTier - count;
-    loadMoreBtn.textContent = 'Lihat ' + remaining + ' lagi';
+    loadMoreBtn.textContent = 'Lihat ' + (nextTier - count) + ' lagi';
     loadMoreBtn.style.display = '';
   }
 
@@ -362,30 +358,21 @@ function buildCard(p) {
     </div>
   `;
 
-  // Tap handler — expand/collapse
   card.addEventListener('click', function(e) {
-    // Don't toggle if clicking shopee link or close btn
     if (e.target.closest('a') || e.target.closest('[data-close]')) return;
-
     const isExpanded = card.classList.contains('expanded');
-
-    // Collapse all
     collapseAll();
-
     if (!isExpanded) {
       card.classList.add('expanded');
-      // Scroll card into view smoothly
-      setTimeout(() => {
+      // FIX 4: Use scrollIntoView inside rAF to avoid forced reflow (was line 171)
+      requestAnimationFrame(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 50);
+      });
     }
   });
 
-  // Close button
   card.addEventListener('click', function(e) {
-    if (e.target.closest('[data-close]')) {
-      card.classList.remove('expanded');
-    }
+    if (e.target.closest('[data-close]')) card.classList.remove('expanded');
   });
 
   return card;
@@ -401,19 +388,29 @@ function formatNum(n) {
 }
 
 // ===== INIT =====
-document.addEventListener('DOMContentLoaded', async function() {
-  // Load products from JSON
-  try {
-    const res = await fetch('./assets/products_data.json');
-    const products = await res.json();
-    setupProductGrid(products);
-  } catch(e) {
-    console.warn('Could not load products_data.json', e);
-  }
-
+// FIX 5: Use requestIdleCallback so product grid load doesn't compete with paint
+document.addEventListener('DOMContentLoaded', function() {
+  // These are lightweight, run immediately
   setupCTATracking();
   setupScrollTracking();
   setupStickyNav();
   setupFAQ();
   setupExitIntent();
+
+  // Product grid is below fold — load during idle time to not block main thread
+  const loadGrid = async () => {
+    try {
+      const res = await fetch('./assets/products_data.json');
+      const products = await res.json();
+      setupProductGrid(products);
+    } catch(e) {
+      console.warn('Could not load products_data.json', e);
+    }
+  };
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadGrid, { timeout: 2000 });
+  } else {
+    setTimeout(loadGrid, 200);
+  }
 });
