@@ -577,14 +577,14 @@ img { max-width: 100%; height: auto; display: block; }
 /* Dashboard proof cards */
 .proof-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 12px;
   margin-bottom: 12px;
 }
 .proof-card {
   background: var(--c-bg-secondary);
   border-radius: var(--radius-lg);
-  padding: 14px 12px;
+  padding: 12px;
   overflow: hidden;
 }
 .proof-card__period {
@@ -612,10 +612,14 @@ img { max-width: 100%; height: auto; display: block; }
 /* Screenshot images in proof cards */
 .proof-card__img {
   width: 100%;
-  height: 80px;
-  object-fit: cover;
+  height: auto;
+  aspect-ratio: 16 / 7;
+  object-fit: contain;
+  object-position: top left;
+  background: #fff;
   border-radius: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--c-border);
 }
 .proof-caption {
   font-size: 11px;
@@ -966,7 +970,7 @@ img { max-width: 100%; height: auto; display: block; }
   .product-grid { grid-template-columns: repeat(3, 1fr); }
   .product-card.expanded { grid-column: span 3; }
   .paywall-blur-grid { grid-template-columns: repeat(3, 1fr); }
-  .proof-grid { grid-template-columns: repeat(4, 1fr); }
+  .proof-grid { grid-template-columns: repeat(2, 1fr); }
   .hero__headline { font-size: 32px; }
   .hero-card__grid { grid-template-columns: 1fr 1fr 1fr; }
 }
