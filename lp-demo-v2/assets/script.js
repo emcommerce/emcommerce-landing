@@ -119,12 +119,36 @@ function setupScrollTracking() {
 }
 
 // ===== STICKY NAV =====
+// FIX [Forced Reflow]: The original code called hero.getBoundingClientRect()
+// directly inside the scroll handler on every single scroll event. Every call
+// to getBoundingClientRect() forces the browser to flush pending style/layout
+// (a "forced reflow"), which Lighthouse reported at ~90ms from this file.
+//
+// Fix strategy:
+//   1. Cache the hero's bottom offset once on load (cheap single read).
+//   2. Re-cache it on resize (debounced) since layout may change.
+//   3. Compare against window.scrollY in the scroll handler — a plain number
+//      comparison with no DOM reads, zero reflow cost.
 function setupStickyNav() {
   const nav = document.getElementById('stickyNav');
   const hero = document.querySelector('.hero');
   if (!nav || !hero) return;
+
+  // Single DOM read upfront — not inside the scroll handler
+  let heroBoundaryY = hero.offsetTop + hero.offsetHeight;
+
+  // Re-measure on resize (debounced to avoid thrashing during resize drag)
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      heroBoundaryY = hero.offsetTop + hero.offsetHeight;
+    }, 150);
+  }, { passive: true });
+
   window.addEventListener('scroll', function() {
-    nav.classList.toggle('visible', hero.getBoundingClientRect().bottom < 0);
+    // Pure number comparison — no DOM read, no reflow
+    nav.classList.toggle('visible', window.scrollY > heroBoundaryY);
   }, { passive: true });
 }
 
@@ -225,32 +249,31 @@ function setupProductGrid(products) {
   const loadMoreBtn = document.getElementById('loadMoreBtn');
   if (!grid || !products) return;
 
-  // FIX 1: Use a Map for O(1) lookup instead of .some() loop
-  let filteredIds = new Set(products.map(p => p.id));
   let visibleCount = 0;
   let allFiltered = products;
 
-  // FIX 2: Build cards with CSS class hidden, not style.display
-  // This avoids style recalc on every show/hide
+  // Build all cards upfront as hidden, append in single DOM write
   const fragment = document.createDocumentFragment();
   products.forEach(p => {
     const card = buildCard(p);
     card.classList.add('card-hidden');
     fragment.appendChild(card);
   });
-  grid.appendChild(fragment); // Single DOM write
+  grid.appendChild(fragment);
 
   function getNextTier(current, total) {
     return LOAD_TIERS.find(t => t > current && t <= total) || total;
   }
 
-  // FIX 3: Batch all DOM reads first, then writes (avoid layout thrashing)
+  // FIX [Forced Reflow]: Batch all DOM reads first then all writes inside a
+  // single rAF. This prevents interleaved read/write cycles ("layout thrashing")
+  // that Lighthouse flagged at script.js:393 with ~90ms total reflow time.
   function renderVisible(filtered, count) {
     const filteredSet = new Set(filtered.map(p => String(p.id)));
     const allCards = grid.querySelectorAll('.product-card');
 
-    // Single requestAnimationFrame to batch all DOM writes
     requestAnimationFrame(() => {
+      // Phase 1 — all DOM writes (classList toggles), zero reads
       let shown = 0;
       allCards.forEach(card => {
         const inFilter = filteredSet.has(card.dataset.id);
@@ -364,7 +387,7 @@ function buildCard(p) {
     collapseAll();
     if (!isExpanded) {
       card.classList.add('expanded');
-      // FIX 4: Use scrollIntoView inside rAF to avoid forced reflow (was line 171)
+      // Scroll inside rAF so the expand transition has started before we measure
       requestAnimationFrame(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -388,16 +411,15 @@ function formatNum(n) {
 }
 
 // ===== INIT =====
-// FIX 5: Use requestIdleCallback so product grid load doesn't compete with paint
 document.addEventListener('DOMContentLoaded', function() {
-  // These are lightweight, run immediately
+  // Lightweight setup — run immediately
   setupCTATracking();
   setupScrollTracking();
   setupStickyNav();
   setupFAQ();
   setupExitIntent();
 
-  // Product grid is below fold — load during idle time to not block main thread
+  // Product grid is below fold — defer to idle time so it doesn't compete with paint
   const loadGrid = async () => {
     try {
       const res = await fetch('./assets/products_data.json');
