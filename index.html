@@ -6,28 +6,23 @@
   <title>Olshop Hack - Data 42.000 Produk Terlaris Shopee | emCommerce</title>
   <meta name="description" content="42.000 data produk terlaris Shopee + strategi dari seller yang sudah menghasilkan Rp2.51 Miliar dalam 3 bulan pertama 2026. Hanya Rp119.000." />
 
-  <!-- Meta Pixel: loads on first user interaction to keep LCP clean -->
+  <!-- Meta Pixel: preload hint so browser fetches early, but init after window load -->
+  <link rel="preload" href="https://connect.facebook.net/en_US/fbevents.js" as="script" crossorigin>
   <script>
-    (function() {
-      var pixelLoaded = false;
-      function loadPixel() {
-        if (pixelLoaded) return;
-        pixelLoaded = true;
-        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-        document,'script','https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '2177371456363308');
-        fbq('track', 'PageView');
-      }
-      ['scroll','click','touchstart','keydown'].forEach(function(evt) {
-        window.addEventListener(evt, loadPixel, { once: true, passive: true });
-      });
-      // Fallback: load after 5s even with no interaction
-      setTimeout(loadPixel, 5000);
-    })();
+    window.addEventListener('load', function() {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2177371456363308');
+      fbq('track', 'PageView');
+    });
   </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=2177371456363308&ev=PageView&noscript=1" />
+  </noscript>
 
   <link rel="stylesheet" href="assets/style.css" />
 </head>
