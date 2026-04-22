@@ -205,7 +205,7 @@ function setupExitIntent() {
     const currentY = window.scrollY;
     const pct = getScrollPct();
     if (pct > maxScrollPct) maxScrollPct = pct;
-    if (maxScrollPct >= 0.15) eligible = true;
+    if (maxScrollPct >= 0.30) eligible = true;
     if (eligible && currentY < lastScrollY) {
       if (upwardScrollStart === null) upwardScrollStart = lastScrollY;
       if ((upwardScrollStart - currentY) >= 100 && (Date.now() - pageEntryTime) / 1000 >= 3) showPopup();
