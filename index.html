@@ -6,22 +6,28 @@
   <title>Olshop Hack - Data 42.000 Produk Terlaris Shopee | emCommerce</title>
   <meta name="description" content="42.000 data produk terlaris Shopee + strategi dari seller yang sudah menghasilkan Rp2.51 Miliar dalam 3 bulan pertama 2026. Hanya Rp119.000." />
 
-  <!-- Meta Pixel: deferred after page load so it never blocks LCP -->
+  <!-- Meta Pixel: loads on first user interaction to keep LCP clean -->
   <script>
-    window.addEventListener('load', function() {
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-      document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '2177371456363308');
-      fbq('track', 'PageView');
-    });
+    (function() {
+      var pixelLoaded = false;
+      function loadPixel() {
+        if (pixelLoaded) return;
+        pixelLoaded = true;
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2177371456363308');
+        fbq('track', 'PageView');
+      }
+      ['scroll','click','touchstart','keydown'].forEach(function(evt) {
+        window.addEventListener(evt, loadPixel, { once: true, passive: true });
+      });
+      // Fallback: load after 5s even with no interaction
+      setTimeout(loadPixel, 5000);
+    })();
   </script>
-  <noscript>
-    <img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=2177371456363308&ev=PageView&noscript=1" />
-  </noscript>
 
   <link rel="stylesheet" href="assets/style.css" />
 </head>
@@ -234,15 +240,15 @@
       <div class="proof-screenshots">
         <div class="screenshot-wrap">
           <div class="screenshot-label">Januari 2026</div>
-          <img src="assets/img/proof-jan-2026.webp" alt="Dashboard Shopee Januari 2026 - Penjualan Rp955.540.000" loading="eager" fetchpriority="high" />
+          <img src="assets/img/proof-jan-2026.webp" alt="Dashboard Shopee Januari 2026 - Penjualan Rp955.540.000" loading="eager" fetchpriority="high" width="800" height="450" />
         </div>
         <div class="screenshot-wrap">
           <div class="screenshot-label">Februari 2026</div>
-          <img src="assets/img/proof-feb-2026.webp" alt="Dashboard Shopee Februari 2026 - Penjualan Rp980.680.000" loading="lazy" />
+          <img src="assets/img/proof-feb-2026.webp" alt="Dashboard Shopee Februari 2026 - Penjualan Rp980.680.000" loading="lazy" width="800" height="450" />
         </div>
         <div class="screenshot-wrap screenshot-wide">
           <div class="screenshot-label primary-label">YTD 2026 - Total 3 Bulan</div>
-          <img src="assets/img/proof-ytd-2026.webp" alt="Dashboard Shopee YTD 2026 - Total Rp2.511.530.000" loading="lazy" />
+          <img src="assets/img/proof-ytd-2026.webp" alt="Dashboard Shopee YTD 2026 - Total Rp2.511.530.000" loading="lazy" width="800" height="450" />
         </div>
       </div>
 
@@ -255,7 +261,7 @@
         </div>
         <div class="screenshot-wrap">
           <div class="screenshot-label">Full Year 2025 - Track Record</div>
-          <img src="assets/img/proof-full-2025.webp" alt="Dashboard Shopee Full Year 2025 - Total Rp7.668.720.000" loading="lazy" />
+          <img src="assets/img/proof-full-2025.webp" alt="Dashboard Shopee Full Year 2025 - Total Rp7.668.720.000" loading="lazy" width="800" height="450" />
         </div>
       </div>
     </div>
