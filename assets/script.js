@@ -1,9 +1,11 @@
-// emCommerce Landing Page - script.js
+// emCommerce Landing Page - script.js (optimized)
 // Meta Pixel: 2177371456363308
+// NOTE: fbq is deferred to window load in HTML.
+// All fbq() calls here are safe because they check typeof fbq first,
+// and since script.js is defer-loaded, pixel will already be initialized.
 
 const PIXEL_ID = '2177371456363308';
-const CAPI_ENDPOINT = '/api/capi'; // Cloudflare Worker endpoint
-const LYNK_PRIMARY = 'https://lynk.id/emcommerce/BORXZyd';
+const CAPI_ENDPOINT = '/api/capi';
 
 // ===== UTILITY =====
 function generateEventId() {
@@ -23,6 +25,11 @@ function getCookie(name) {
   return match ? match[2] : '';
 }
 
+// Safe fbq wrapper — never throws even if pixel not yet loaded
+function safeFbq(...args) {
+  if (typeof fbq === 'function') fbq(...args);
+}
+
 // ===== CAPI SERVER-SIDE =====
 async function sendCAPIEvent(eventName, eventId, extraData = {}) {
   try {
@@ -38,23 +45,19 @@ async function sendCAPIEvent(eventName, eventId, extraData = {}) {
       })
     });
   } catch (e) {
-    // CAPI failure is non-critical, pixel still fires
+    // CAPI failure is non-critical
   }
 }
 
 // ===== META PIXEL EVENTS =====
 function trackInitiateCheckout(buttonId) {
   const eventId = generateEventId();
-  // Client-side pixel
-  if (typeof fbq === 'function') {
-    fbq('track', 'InitiateCheckout', {
-      content_name: 'Olshop Hack Premium',
-      content_ids: ['olshop-hack-119'],
-      currency: 'IDR',
-      value: 119000,
-    }, { eventID: eventId });
-  }
-  // Server-side CAPI
+  safeFbq('track', 'InitiateCheckout', {
+    content_name: 'Olshop Hack Premium',
+    content_ids: ['olshop-hack-119'],
+    currency: 'IDR',
+    value: 119000,
+  }, { eventID: eventId });
   sendCAPIEvent('InitiateCheckout', eventId, {
     content_name: 'Olshop Hack Premium',
     value: 119000,
@@ -69,24 +72,20 @@ function setupCTATracking() {
   ctaIds.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener('click', function(e) {
+    el.addEventListener('click', function() {
       window.ctaClicked = true;
       trackInitiateCheckout(id);
-      // Allow natural navigation after pixel fires
     });
   });
 
-  // Downsell CTA - track separately (no InitiateCheckout, different product)
   const downsellBtn = document.getElementById('downsellCta');
   if (downsellBtn) {
     downsellBtn.addEventListener('click', function() {
-      if (typeof fbq === 'function') {
-        fbq('trackCustom', 'DownsellClick', {
-          content_name: 'Data 42000 Produk',
-          value: 49000,
-          currency: 'IDR'
-        });
-      }
+      safeFbq('trackCustom', 'DownsellClick', {
+        content_name: 'Data 42000 Produk',
+        value: 49000,
+        currency: 'IDR'
+      });
     });
   }
 }
@@ -100,14 +99,12 @@ function setupScrollTracking() {
     const total = document.documentElement.scrollHeight;
     if (scrolled / total >= 0.5) {
       viewContentFired = true;
-      if (typeof fbq === 'function') {
-        fbq('track', 'ViewContent', {
-          content_name: 'Olshop Hack Premium',
-          content_ids: ['olshop-hack-119'],
-          currency: 'IDR',
-          value: 119000,
-        });
-      }
+      safeFbq('track', 'ViewContent', {
+        content_name: 'Olshop Hack Premium',
+        content_ids: ['olshop-hack-119'],
+        currency: 'IDR',
+        value: 119000,
+      });
       window.removeEventListener('scroll', onScroll, { passive: true });
     }
   }
@@ -119,14 +116,8 @@ function setupStickyNav() {
   const nav = document.getElementById('stickyNav');
   const hero = document.querySelector('.hero');
   if (!nav || !hero) return;
-
   function onScroll() {
-    const heroBottom = hero.getBoundingClientRect().bottom;
-    if (heroBottom < 0) {
-      nav.classList.add('visible');
-    } else {
-      nav.classList.remove('visible');
-    }
+    nav.classList.toggle('visible', hero.getBoundingClientRect().bottom < 0);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
 }
@@ -138,17 +129,12 @@ function setupFAQ() {
     const btn = item.querySelector('.faq-q');
     const ans = item.querySelector('.faq-a');
     if (!btn || !ans) return;
-
     btn.addEventListener('click', function() {
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
-
-      // Close all
       items.forEach(i => {
         i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
         i.querySelector('.faq-a').classList.remove('open');
       });
-
-      // Open clicked if was closed
       if (!isOpen) {
         btn.setAttribute('aria-expanded', 'true');
         ans.classList.add('open');
@@ -184,9 +170,7 @@ function setupExitIntent() {
     sessionStorage.setItem(SESSION_KEY, '1');
     overlay.classList.add('active');
     overlay.setAttribute('aria-hidden', 'false');
-    if (typeof fbq === 'function') {
-      fbq('trackCustom', 'PromoPopupShown');
-    }
+    safeFbq('trackCustom', 'PromoPopupShown');
   }
 
   function hidePopup() {
@@ -194,70 +178,41 @@ function setupExitIntent() {
     overlay.setAttribute('aria-hidden', 'true');
   }
 
-  // Scroll-based exit intent
   window.addEventListener('scroll', function() {
     const currentY = window.scrollY;
     const pct = getScrollPct();
-
     if (pct > maxScrollPct) maxScrollPct = pct;
     if (maxScrollPct >= 0.15) eligible = true;
-
     if (eligible && currentY < lastScrollY) {
-      // Scrolling up
       if (upwardScrollStart === null) upwardScrollStart = lastScrollY;
       const upDelta = upwardScrollStart - currentY;
-      if (upDelta >= 100) {
-        const timeOnPage = (Date.now() - pageEntryTime) / 1000;
-        if (timeOnPage >= 3) showPopup();
-      }
+      if (upDelta >= 100 && (Date.now() - pageEntryTime) / 1000 >= 3) showPopup();
     } else {
       upwardScrollStart = null;
     }
-
     lastScrollY = currentY;
   }, { passive: true });
 
-  // Desktop: traditional mouse-leave exit intent (bonus)
   document.addEventListener('mouseleave', function(e) {
-    if (e.clientY <= 0 && eligible) {
-      const timeOnPage = (Date.now() - pageEntryTime) / 1000;
-      if (timeOnPage >= 3) showPopup();
-    }
+    if (e.clientY <= 0 && eligible && (Date.now() - pageEntryTime) / 1000 >= 3) showPopup();
   });
 
-  // Close handlers
   closeBtn && closeBtn.addEventListener('click', hidePopup);
-  overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) hidePopup();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') hidePopup();
-  });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) hidePopup(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') hidePopup(); });
 
-  // Copy code
   copyBtn && copyBtn.addEventListener('click', function() {
     const code = 'APRILSALE';
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code).then(function() {
         copyBtn.textContent = 'Kode Disalin!';
-        if (typeof fbq === 'function') {
-          fbq('trackCustom', 'PromoCodeCopied', { promo_code: code, discount: '30%' });
-        }
+        safeFbq('trackCustom', 'PromoCodeCopied', { promo_code: code, discount: '30%' });
         setTimeout(hidePopup, 1000);
-      }).catch(function() {
-        // Fallback
-        const box = document.getElementById('promoCodeBox');
-        if (box) {
-          const range = document.createRange();
-          range.selectNodeContents(box);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-        copyBtn.textContent = 'Salin kode di atas';
-      });
+      }).catch(fallbackCopy);
     } else {
-      // Fallback for older browsers
+      fallbackCopy();
+    }
+    function fallbackCopy() {
       const box = document.getElementById('promoCodeBox');
       if (box) {
         const range = document.createRange();
