@@ -6,20 +6,17 @@
   <title>Olshop Hack - Data 42.000 Produk Terlaris Shopee | emCommerce</title>
   <meta name="description" content="42.000 data produk terlaris Shopee + strategi dari seller yang sudah menghasilkan Rp2.51 Miliar dalam 3 bulan pertama 2026. Hanya Rp119.000." />
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Meta Pixel -->
+  <!-- Meta Pixel: deferred after page load so it never blocks LCP -->
   <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-    document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '2177371456363308');
-    fbq('track', 'PageView');
+    window.addEventListener('load', function() {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2177371456363308');
+      fbq('track', 'PageView');
+    });
   </script>
   <noscript>
     <img height="1" width="1" style="display:none"
@@ -237,7 +234,7 @@
       <div class="proof-screenshots">
         <div class="screenshot-wrap">
           <div class="screenshot-label">Januari 2026</div>
-          <img src="assets/img/proof-jan-2026.webp" alt="Dashboard Shopee Januari 2026 - Penjualan Rp955.540.000" loading="lazy" />
+          <img src="assets/img/proof-jan-2026.webp" alt="Dashboard Shopee Januari 2026 - Penjualan Rp955.540.000" loading="eager" fetchpriority="high" />
         </div>
         <div class="screenshot-wrap">
           <div class="screenshot-label">Februari 2026</div>
