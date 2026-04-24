@@ -1,4 +1,4 @@
-// emCommerce Landing Page - script.js (lp-demo-v2)
+// emCommerce Landing Page v3 - script.js
 // Meta Pixel: 2177371456363308
 
 const PIXEL_ID = '2177371456363308';
@@ -43,15 +43,15 @@ function trackInitiateCheckout(buttonId) {
   const eventId = generateEventId();
   if (typeof fbq === 'function') {
     fbq('track', 'InitiateCheckout', {
-      content_name: 'Olshop Hack Premium',
-      content_ids: ['olshop-hack-119'],
+      content_name: 'Olshop Hack 2026',
+      content_ids: ['olshop-hack-99'],
       currency: 'IDR',
-      value: 119000,
+      value: 99000,
     }, { eventID: eventId });
   }
   sendCAPIEvent('InitiateCheckout', eventId, {
-    content_name: 'Olshop Hack Premium',
-    value: 119000,
+    content_name: 'Olshop Hack 2026',
+    value: 99000,
     currency: 'IDR',
     button_id: buttonId
   });
@@ -65,30 +65,25 @@ function trackProductClick(productId) {
 
 // ===== CTA TRACKING =====
 function setupCTATracking() {
+  // Hero CTA - scrolls to demo grid
   const heroCta = document.getElementById('heroCta');
   if (heroCta) {
     heroCta.addEventListener('click', function() {
-      const gridSection = document.querySelector('[aria-label="50 Hidden Gems"]');
+      const gridSection = document.getElementById('gridSection');
       if (gridSection) gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
-  const ctaIds = ['navCta', 'paywallCta', 'valueCta'];
+
+  // All main CTAs - track + navigate
+  const ctaIds = ['navCta', 'paywallCta', 'revealCta', 'valueCta', 'finalCta'];
   ctaIds.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener('click', function() {
+    el.addEventListener('click', function(e) {
       window.ctaClicked = true;
       trackInitiateCheckout(id);
     });
   });
-  const downsellBtn = document.getElementById('downsellCta');
-  if (downsellBtn) {
-    downsellBtn.addEventListener('click', function() {
-      if (typeof fbq === 'function') {
-        fbq('trackCustom', 'DownsellClick', { content_name: 'Data 42000 Produk', value: 49000, currency: 'IDR' });
-      }
-    });
-  }
 }
 
 // ===== SCROLL TRACKING =====
@@ -103,10 +98,10 @@ function setupScrollTracking() {
       viewContentFired = true;
       if (typeof fbq === 'function') {
         fbq('track', 'ViewContent', {
-          content_name: 'Olshop Hack Premium',
-          content_ids: ['olshop-hack-119'],
+          content_name: 'Olshop Hack 2026',
+          content_ids: ['olshop-hack-99'],
           currency: 'IDR',
-          value: 119000,
+          value: 99000,
         });
       }
     }
@@ -118,26 +113,51 @@ function setupScrollTracking() {
   }, { passive: true });
 }
 
+// ===== INTERSECTION OBSERVER EVENTS (v3 new) =====
+function setupIntersectionTracking() {
+  const observerOpts = { threshold: 0.5 };
+
+  // Objection cards
+  ['objection1', 'objection2', 'objection3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          if (typeof fbq === 'function') {
+            fbq('trackCustom', 'ObjectionViewed_' + (i + 1));
+          }
+          obs.disconnect();
+        }
+      });
+    }, observerOpts);
+    obs.observe(el);
+  });
+
+  // Reveal section
+  const revealSection = document.getElementById('revealSection');
+  if (revealSection) {
+    const obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          if (typeof fbq === 'function') fbq('trackCustom', 'RevealSectionViewed');
+          obs.disconnect();
+        }
+      });
+    }, observerOpts);
+    obs.observe(revealSection);
+  }
+}
+
 // ===== STICKY NAV =====
-// FIX [Forced Reflow]: The original code called hero.getBoundingClientRect()
-// directly inside the scroll handler on every single scroll event. Every call
-// to getBoundingClientRect() forces the browser to flush pending style/layout
-// (a "forced reflow"), which Lighthouse reported at ~90ms from this file.
-//
-// Fix strategy:
-//   1. Cache the hero's bottom offset once on load (cheap single read).
-//   2. Re-cache it on resize (debounced) since layout may change.
-//   3. Compare against window.scrollY in the scroll handler — a plain number
-//      comparison with no DOM reads, zero reflow cost.
+// FIX [Forced Reflow]: Cache hero boundary upfront, compare against scrollY (no DOM read in scroll handler).
 function setupStickyNav() {
   const nav = document.getElementById('stickyNav');
   const hero = document.querySelector('.hero');
   if (!nav || !hero) return;
 
-  // Single DOM read upfront — not inside the scroll handler
   let heroBoundaryY = hero.offsetTop + hero.offsetHeight;
 
-  // Re-measure on resize (debounced to avoid thrashing during resize drag)
   let resizeTimer;
   window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
@@ -147,7 +167,6 @@ function setupStickyNav() {
   }, { passive: true });
 
   window.addEventListener('scroll', function() {
-    // Pure number comparison — no DOM read, no reflow
     nav.classList.toggle('visible', window.scrollY > heroBoundaryY);
   }, { passive: true });
 }
@@ -176,7 +195,7 @@ function setupExitIntent() {
   const closeBtn = document.getElementById('promoClose');
   const copyBtn = document.getElementById('promoCopyBtn');
   if (!overlay) return;
-  const SESSION_KEY = 'emc_popup_shown';
+  const SESSION_KEY = 'emc_popup_shown_v3';
   if (sessionStorage.getItem(SESSION_KEY)) return;
 
   let pageEntryTime = Date.now();
@@ -201,6 +220,7 @@ function setupExitIntent() {
     overlay.classList.remove('active');
     overlay.setAttribute('aria-hidden', 'true');
   }
+
   window.addEventListener('scroll', function() {
     const currentY = window.scrollY;
     const pct = getScrollPct();
@@ -209,15 +229,20 @@ function setupExitIntent() {
     if (eligible && currentY < lastScrollY) {
       if (upwardScrollStart === null) upwardScrollStart = lastScrollY;
       if ((upwardScrollStart - currentY) >= 100 && (Date.now() - pageEntryTime) / 1000 >= 3) showPopup();
-    } else { upwardScrollStart = null; }
+    } else {
+      upwardScrollStart = null;
+    }
     lastScrollY = currentY;
   }, { passive: true });
+
   document.addEventListener('mouseleave', function(e) {
     if (e.clientY <= 0 && eligible && (Date.now() - pageEntryTime) / 1000 >= 3) showPopup();
   });
+
   closeBtn && closeBtn.addEventListener('click', hidePopup);
   overlay.addEventListener('click', function(e) { if (e.target === overlay) hidePopup(); });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') hidePopup(); });
+
   copyBtn && copyBtn.addEventListener('click', function() {
     const code = 'APRILSALE';
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -226,7 +251,9 @@ function setupExitIntent() {
         if (typeof fbq === 'function') fbq('trackCustom', 'PromoCodeCopied', { promo_code: code, discount: '30%' });
         setTimeout(hidePopup, 1200);
       }).catch(fallbackCopy);
-    } else { fallbackCopy(); }
+    } else {
+      fallbackCopy();
+    }
     function fallbackCopy() {
       const box = document.getElementById('promoCodeBox');
       if (box) {
@@ -243,6 +270,12 @@ function setupExitIntent() {
 
 // ===== PRODUCT GRID =====
 const LOAD_TIERS = [6, 16, 30, 50];
+
+// Objection cards appear progressively:
+// After 6 shown -> show objection #1
+// After 16 shown -> show objection #2
+// After 30 shown -> show objection #3
+// After 50 shown -> show paywall
 
 function setupProductGrid(products) {
   const grid = document.getElementById('productGrid');
@@ -265,15 +298,12 @@ function setupProductGrid(products) {
     return LOAD_TIERS.find(t => t > current && t <= total) || total;
   }
 
-  // FIX [Forced Reflow]: Batch all DOM reads first then all writes inside a
-  // single rAF. This prevents interleaved read/write cycles ("layout thrashing")
-  // that Lighthouse flagged at script.js:393 with ~90ms total reflow time.
+  // FIX [Forced Reflow]: Batch DOM reads then writes inside rAF.
   function renderVisible(filtered, count) {
     const filteredSet = new Set(filtered.map(p => String(p.id)));
     const allCards = grid.querySelectorAll('.product-card');
 
     requestAnimationFrame(() => {
-      // Phase 1 — all DOM writes (classList toggles), zero reads
       let shown = 0;
       allCards.forEach(card => {
         const inFilter = filteredSet.has(card.dataset.id);
@@ -285,14 +315,35 @@ function setupProductGrid(products) {
     });
   }
 
-  function updateLoadMoreBtn(filtered, count) {
+  function updateUI(filtered, count) {
     if (!loadMoreBtn) return;
+
+    // Show/hide objection cards based on tier
+    if (count >= 6) {
+      const obj1 = document.getElementById('objection1');
+      if (obj1) obj1.classList.add('visible');
+    }
+    if (count >= 16) {
+      const obj2 = document.getElementById('objection2');
+      if (obj2) obj2.classList.add('visible');
+    }
+    if (count >= 30) {
+      const obj3 = document.getElementById('objection3');
+      if (obj3) obj3.classList.add('visible');
+    }
+    if (count >= 50) {
+      const paywall = document.getElementById('paywallBlock');
+      if (paywall) paywall.classList.add('visible');
+    }
+
+    // Load more button
     if (count >= filtered.length) {
       loadMoreBtn.style.display = 'none';
       return;
     }
     const nextTier = getNextTier(count, filtered.length);
-    loadMoreBtn.textContent = 'Lihat ' + (nextTier - count) + ' lagi';
+    const delta = nextTier - count;
+    loadMoreBtn.textContent = 'Lihat ' + delta + ' lagi';
     loadMoreBtn.style.display = '';
   }
 
@@ -303,7 +354,7 @@ function setupProductGrid(products) {
       : products.filter(p => p.kategori_slug === categorySlug);
     visibleCount = Math.min(6, allFiltered.length);
     renderVisible(allFiltered, visibleCount);
-    updateLoadMoreBtn(allFiltered, visibleCount);
+    updateUI(allFiltered, visibleCount);
   }
 
   if (loadMoreBtn) {
@@ -311,7 +362,7 @@ function setupProductGrid(products) {
       const nextTier = getNextTier(visibleCount, allFiltered.length);
       visibleCount = nextTier;
       renderVisible(allFiltered, visibleCount);
-      updateLoadMoreBtn(allFiltered, visibleCount);
+      updateUI(allFiltered, visibleCount);
       if (typeof fbq === 'function') {
         if (visibleCount >= 50) fbq('trackCustom', 'ExpandProducts_50');
         else if (visibleCount >= 30) fbq('trackCustom', 'ExpandProducts_30');
@@ -320,11 +371,22 @@ function setupProductGrid(products) {
     });
   }
 
+  // Category filter chips
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', function() {
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.chip').forEach(c => {
+        c.classList.remove('active');
+        c.setAttribute('aria-pressed', 'false');
+      });
       this.classList.add('active');
-      applyFilter(this.dataset.cat);
+      this.setAttribute('aria-pressed', 'true');
+
+      const cat = this.dataset.cat;
+      if (typeof fbq === 'function') {
+        fbq('trackCustom', 'CategoryFilterUsed', { category: cat });
+      }
+
+      applyFilter(cat);
     });
   });
 
@@ -354,7 +416,7 @@ function buildCard(p) {
     </div>
     <div class="card-footer">
       <span>${formatNum(p.terjual_bulan)} terjual</span>
-      <span class="card-footer-rating">★ ${escHtml(p.rating)}</span>
+      <span class="card-footer-rating">&#9733; ${escHtml(p.rating)}</span>
     </div>
     <div class="card-expanded-content">
       <div class="card-detail-row">
@@ -375,7 +437,7 @@ function buildCard(p) {
            class="card-btn-shopee"
            target="_blank"
            rel="noopener noreferrer sponsored"
-           onclick="trackProductClick(${p.id})">Lihat di Shopee ↗</a>
+           onclick="trackProductClick(${p.id})">Lihat di Shopee &#8599;</a>
         <button class="card-btn-close" data-close="${p.id}">Tutup</button>
       </div>
     </div>
@@ -387,7 +449,6 @@ function buildCard(p) {
     collapseAll();
     if (!isExpanded) {
       card.classList.add('expanded');
-      // Scroll inside rAF so the expand transition has started before we measure
       requestAnimationFrame(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
@@ -403,7 +464,11 @@ function buildCard(p) {
 
 function escHtml(str) {
   if (typeof str !== 'string') return str;
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function formatNum(n) {
@@ -412,20 +477,21 @@ function formatNum(n) {
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', function() {
-  // Lightweight setup — run immediately
+  // Lightweight setup - run immediately
   setupCTATracking();
   setupScrollTracking();
   setupStickyNav();
   setupFAQ();
   setupExitIntent();
+  setupIntersectionTracking();
 
-  // Product grid is below fold — defer to idle time so it doesn't compete with paint
+  // Product grid is below fold - defer to idle time
   const loadGrid = async () => {
     try {
       const res = await fetch('./assets/products_data.json');
       const products = await res.json();
       setupProductGrid(products);
-    } catch(e) {
+    } catch (e) {
       console.warn('Could not load products_data.json', e);
     }
   };
