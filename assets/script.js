@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Product grid is below fold - defer to idle time
   const loadGrid = async () => {
     try {
-      const res = await fetch('./assets/products_data.json');
+      const res = await fetch('/assets/products_data.json');
       const products = await res.json();
       setupProductGrid(products);
     } catch (e) {
