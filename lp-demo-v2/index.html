@@ -77,6 +77,11 @@
     /* Micro nudge */
     .hero__nudge{font-size:12px;color:var(--color-neutral-500);text-align:center;display:block;margin-top:var(--space-sm);font-style:italic}
 
+    /* Screenshots */
+    .hero__screenshot{width:100%;border-radius:var(--radius-lg);margin-bottom:var(--space-md)}
+    .hero__screenshot-caption{font-size:15px;font-weight:600;color:var(--color-neutral-900);line-height:1.5;margin-bottom:var(--space-md);display:block}
+    .objection-card__screenshot{width:100%;border-radius:var(--radius-md);margin:var(--space-md) 0}
+
     /* Section base */
     .section{padding:var(--space-2xl) 0}
     .section--alt{background:var(--color-neutral-50)}
@@ -112,28 +117,42 @@
     <span class="hero__logo">emCommerce</span>
 
     <h1 class="hero__headline">
-      Dalam 2 minggu pertama April 2026,<br>
-      1 sub-kategori di toko saya<br>
-      hasilin Rp831.250.000.
+      Produk apa yang hasilin<br>Rp2,51 Miliar di awal 2026?
     </h1>
+
+    <img src="./assets/img/MTD_21_Apr.webp" alt="Dashboard Shopee YTD 2026 Rp2.51 Miliar" class="hero__screenshot" loading="eager">
+
+    <p class="hero__screenshot-caption">dan masih hasilin Rp831.250.000 di awal bulan April 2026</p>
+
+    <img src="./assets/img/Sumber_kunjungan_April.webp" alt="Sumber kunjungan penjualan April 2026" class="hero__screenshot" loading="eager">
 
     <!-- Proof callout box -->
     <div class="hero__proof" aria-label="Bukti omzet">
       <span class="hero__proof-number">Rp831.250.000</span>
-      <p class="hero__proof-sub">dari 1 sub-kategori, 2 minggu</p>
+      <p class="hero__proof-sub">dari 1 sub-kategori, 2 minggu pertama April 2026</p>
       <p class="hero__proof-tag">Bukan produk viral. Bukan modal besar.</p>
     </div>
 
     <p class="hero__subcopy">
-      Saya ga akan kasih tau kategorinya dulu.<br>
-      Kamu akan tebak sendiri setelah lihat data 50 produk di bawah.<br>
-      Tapi 1 spoiler: ini bukan produk yang sering muncul di FYP.
+      Yang pasti ini bukan produk yang sering kamu lihat di FYP, bukan skincare ataupun gadget.<br><br>
+      Masih banyak sub-kategori yang ramai pembeli tapi minim kompetitor.<br><br>
+      Contohnya aja 1 produk ini menghasilkan Rp457.950.000 dalam 2 minggu saja.
+    </p>
+
+    <img src="./assets/img/Produk_list_April.webp" alt="Performa produk April 2026" class="hero__screenshot" loading="lazy">
+
+    <p class="hero__subcopy">
+      Mau juga hasilin ratusan juta per bulan hanya dari 1 produk?<br><br>
+      Kamu ga akan bisa sebelum kamu temukan <strong>winning product</strong>mu sendiri.<br><br>
+      Bukan tentang <em>ini produk apa</em>, tapi gimana cara cari produk seperti ini.<br><br>
+      Strategi ini yang akan saya bagikan agar kamu juga bisa cari winning product-mu, dan saya juga akan bagikan 42rb produk terlaris di Shopee Indonesia dengan puluhan sub-kategori di dalamnya.<br><br>
+      Contoh data produk terlaris bisa kamu lihat di sini.
     </p>
 
     <button type="button" class="btn btn--primary" id="heroCta" aria-label="Scroll ke demo produk">
       Lihat 50 Produk Dulu
     </button>
-    <span class="hero__nudge">Skeptis? Semua produk bisa kamu klik dan verifikasi sendiri di Shopee.</span>
+    <span class="hero__nudge">Semua produk bisa kamu klik dan verifikasi sendiri di Shopee.</span>
   </div>
 </section>
 
@@ -168,9 +187,12 @@
 
     <!-- Objection card #1 - appears after tier 1 (6 cards) -->
     <div class="objection-card" id="objection1" aria-label="Bantahan keberatan 1">
-      <p class="objection-card__thought">"Tapi market online shop udah rame banget. Saya udah telat."</p>
-      <p class="objection-card__rebuttal"><strong>Telat itu mitos.</strong><br>
-      42.000 produk di database ini semua masih aktif terjual di 2026. Yang telat itu seller yang masih pilih produk pakai feeling, bukan data.</p>
+      <p class="objection-card__thought">"Tapi saya masih ga yakin bisa kejar."</p>
+      <p class="objection-card__rebuttal"><strong>Saya juga.</strong><br>
+      Tapi itu pikiran saya di 2021, saat masih jadi seller yang pilih produk pakai feeling, bukan data.</p>
+      <img src="./assets/img/2021.jpeg" alt="Dashboard Shopee 2021" class="objection-card__screenshot" loading="lazy">
+      <p class="objection-card__rebuttal" style="margin-top:12px">Saya butuh 5 tahun untuk sampai di titik ini.<br><br>
+      Kamu ga perlu selama itu, karena semua hal yang saya pelajari - termasuk insight dari RM saya dulu sebagai seller aktif - akan saya tuangkan ke dalam ebook Olshop Hack ini.</p>
     </div>
 
     <!-- Load more button (tier 1 -> 16) -->
@@ -202,69 +224,6 @@
         <p class="paywall__code">Pakai kode <strong>APRILSALE</strong></p>
       </div>
     </div>
-
-  </div>
-</section>
-
-<!-- ===== SECTION 3: REVEAL + PAYOFF ===== -->
-<section class="section section--alt" id="revealSection" aria-label="Reveal kategori">
-  <div class="container">
-
-    <p class="reveal__callback">Masih penasaran kategori Rp831 juta tadi?</p>
-    <div class="reveal__answer" aria-label="Jawaban kategori">
-      <p class="reveal__product">Jaket, Mantel &amp; Rompi.</p>
-      <p class="reveal__location">Di Indonesia.</p>
-    </div>
-
-    <!-- Styled data table - HTML/CSS representation (replace with screenshot when available) -->
-    <div class="reveal__data-table" aria-label="Data penjualan kategori">
-      <div class="data-table__header">
-        <span class="data-table__label">Shopee Seller Center</span>
-        <span class="data-table__period">1-15 April 2026</span>
-      </div>
-      <div class="data-table__row">
-        <span class="data-table__key">Kategori</span>
-        <span class="data-table__val">Pakaian Pria - Jaket, Mantel &amp; Rompi</span>
-      </div>
-      <div class="data-table__row">
-        <span class="data-table__key">Periode</span>
-        <span class="data-table__val">1-15 April 2026</span>
-      </div>
-      <div class="data-table__row">
-        <span class="data-table__key">Penjualan</span>
-        <span class="data-table__val data-table__val--accent">Rp831.250.000</span>
-      </div>
-      <div class="data-table__row">
-        <span class="data-table__key">Total Pembeli</span>
-        <span class="data-table__val">5.473 orang</span>
-      </div>
-      <div class="data-table__row">
-        <span class="data-table__key">Konversi</span>
-        <span class="data-table__val">34,35%</span>
-      </div>
-    </div>
-
-    <!-- 1 produk breakdown -->
-    <div class="reveal__breakdown">
-      <p class="reveal__breakdown-intro">Dan ini cuma angka kategori.<br>1 produk paling laris dari kategori ini:</p>
-      <div class="reveal__breakdown-stat">
-        <span class="reveal__breakdown-number">Rp457.950.000</span>
-        <span class="reveal__breakdown-period">dalam 15 hari</span>
-      </div>
-      <p class="reveal__breakdown-meta">305.000 views &middot; 14.050 klik produk &middot; 4,60% konversi</p>
-    </div>
-
-    <!-- Insight pivot -->
-    <div class="reveal__insight">
-      <p>Kamu ga akan nemu produk ini dari scroll FYP.<br>
-      Produk ini ada di spot blind buat seller yang masih jualan pakai feeling.</p>
-      <p>Tapi produk ini ada di database.<br>
-      Bareng 41.999 produk lain yang sama counter-intuitive-nya.</p>
-    </div>
-
-    <a href="https://lynk.id/emcommerce/BORXZyd" class="btn btn--primary" id="revealCta" role="button">
-      Akses Database 42.000 Produk - Rp69.300
-    </a>
 
   </div>
 </section>
@@ -357,6 +316,29 @@
       Ambil Sekarang - Rp69.300
     </a>
     <p class="promo-hint">Gunakan kode <strong>APRILSALE</strong> saat checkout di Lynk.id</p>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: REVEAL (dipindah) ===== -->
+<section class="section section--alt" id="revealSection" aria-label="Reveal kategori">
+  <div class="container">
+
+    <p class="reveal__callback">Oiya, masih mau tau Rp2,51 Miliar di awal tahun 2026 dan Rp831 juta di awal April tadi dari produk apa?</p>
+
+    <img src="./assets/img/Produk_April.webp" alt="Komposisi penjualan produk April 2026" class="hero__screenshot" loading="lazy">
+
+    <!-- Insight pivot -->
+    <div class="reveal__insight">
+      <p>Kamu ga akan nemu produk ini dari scroll FYP.<br>
+      Produk ini ada di spot blind buat seller yang masih jualan pakai feeling.</p>
+      <p>Tapi produk ini ada di database.<br>
+      Bareng 41.999 produk lain yang bisa kamu miliki aksesnya tanpa harus bayar tiap bulan.</p>
+    </div>
+
+    <a href="https://lynk.id/emcommerce/BORXZyd" class="btn btn--primary" id="revealCta" role="button">
+      Akses Database 42.000 Produk - Rp69.300
+    </a>
+
   </div>
 </section>
 
