@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Olshop Hack 2026 - Data 42.000 Produk Terlaris Shopee</title>
-  <meta name="description" content="Dalam 2 minggu pertama April 2026, 1 sub-kategori hasilin Rp831 juta. Lihat 50 produk nyata dari database 42.000 produk terlaris Shopee. Rp69.300 pakai kode APRILSALE.">
+  <title>Olshop Hack 2026 - Data 42.000 Winning Product Shopee</title>
+  <meta name="description" content="Dalam 2 minggu pertama April 2026, 1 sub-kategori hasilin Rp831 juta. Lihat 50 produk nyata dari database 42.000 Winning Product Shopee. Rp69.300 pakai kode APRILSALE.">
 
   <!-- Preload product data JSON -->
   <link rel="preload" href="/assets/products_data.json" as="fetch" crossorigin="anonymous">
@@ -97,6 +97,27 @@
     .contrast-statement__problem em{font-style:normal}
     .contrast-statement__solution{font-size:22px;font-weight:700;color:var(--color-accent);letter-spacing:-0.4px;line-height:1.2}
     @media(min-width:769px){.contrast-statement__solution{font-size:26px}}
+
+    /* ===== DATABASE LIST (new) ===== */
+    .db-list-section{margin:var(--space-lg) 0}
+    .db-list-section__title{font-size:14px;font-weight:600;color:var(--color-neutral-500);letter-spacing:.4px;text-transform:uppercase;margin-bottom:var(--space-md)}
+    .db-columns{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm)}
+    @media(min-width:769px){.db-columns{grid-template-columns:repeat(3,1fr)}}
+    .db-col__label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--color-neutral-500);margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--color-neutral-200)}
+    .db-col__items{display:flex;flex-direction:column;gap:4px}
+    .db-col__item{font-size:13px;color:var(--color-neutral-700);display:flex;align-items:center;gap:6px;line-height:1.4}
+    .db-col__item::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--color-accent);flex-shrink:0}
+    .db-col__item.db-col__item--muted{color:var(--color-neutral-500);font-style:italic}
+    .db-col__item.db-col__item--muted::before{background:var(--color-neutral-300)}
+
+    /* ===== CTA to demo (new) ===== */
+    .reveal-demo-cta{margin-top:var(--space-lg);padding-top:var(--space-lg);border-top:1px solid var(--color-neutral-200)}
+    .reveal-demo-cta__eyebrow{font-size:13px;color:var(--color-neutral-500);text-align:center;margin-bottom:var(--space-sm);line-height:1.5}
+    .reveal-demo-cta__eyebrow strong{color:var(--color-neutral-900)}
+    .btn--ghost-dark{display:block;width:100%;padding:16px 20px;border-radius:var(--radius-md);font-size:15px;font-weight:600;text-align:center;transition:border-color .15s,background .15s,transform .1s;letter-spacing:-0.1px;cursor:pointer;color:var(--color-neutral-900);border:1.5px solid var(--color-neutral-900);background:var(--color-white)}
+    .btn--ghost-dark:hover{background:var(--color-neutral-50)}
+    .btn--ghost-dark:active{transform:scale(.98)}
+    .reveal-demo-cta__nudge{font-size:12px;color:var(--color-neutral-500);text-align:center;display:block;margin-top:var(--space-sm);font-style:italic}
   </style>
 
   <!-- Meta Pixel - fires after window.load so it does not block LCP -->
@@ -117,7 +138,7 @@
   <a href="https://lynk.id/emcommerce/BORXZyd" id="navCta" role="button">Ambil - Rp69.300</a>
 </nav>
 
-<!-- ===== SECTION 1: HERO (COMPRESSED v3.1) ===== -->
+<!-- ===== SECTION 1: HERO (button "50 contoh produk" DIHAPUS dari sini) ===== -->
 <section class="hero" aria-label="Hero">
   <div class="container">
     <span class="hero__logo">emCommerce</span>
@@ -136,15 +157,11 @@
   <div class="container">
     <p class="bridge-strip__claim"><strong>Ini winning product toko saya,</strong> bukan hasil nebak-nebak.</p>
     <p class="bridge-strip__body">Untuk nemu produk-produknya, saya ga scroll FYP cari produk viral.</p>
-    <p class="bridge-strip__body">Saya riset di database 42.000 produk terlaris Shopee, pakai metode <strong><i>Olshop Hack.</i></strong></p>
+    <p class="bridge-strip__body">Saya riset di database 42.000 Winning Product Shopee, pakai metode <strong><i>Olshop Hack.</i></strong></p>
     <p class="bridge-strip__cta-text">50 contoh produk database untuk riset metode ini bisa kamu lihat sekarang ↓</p>
   </div>
 </section>
 
-     <button type="button" class="btn btn--primary" id="heroCta" aria-label="Scroll ke demo produk">
-      Lihat 50 contoh produknya ↓
-    </button>
-    <span class="hero__nudge">Semua produk bisa kamu klik dan verifikasi sendiri di Shopee.</span>
   </div>
 </section>
   
@@ -215,7 +232,7 @@
         <p class="contrast-statement__solution">Tapi GIMANA cara dapet produknya.</p>
       </div>
       <p class="bridge-block__copy">
-        Strategi ini yang akan saya bagikan, plus 42rb produk terlaris Shopee Indonesia di puluhan sub-kategori.
+        Strategi ini yang akan saya bagikan, plus 42rb Winning Product Shopee Indonesia di puluhan sub-kategori.
       </p>
     </div>
 
@@ -235,11 +252,11 @@
   </div>
 </section>
 
-<!-- ===== SECTION 3: REVEAL (expanded with relocated content from hero) ===== -->
+<!-- ===== SECTION 3: REVEAL (expanded) ===== -->
 <section class="section section--alt" id="revealSection" aria-label="Reveal kategori">
   <div class="container">
 
-    <p class="reveal__callback">Oiya, masih mau tau Rp2,51 Miliar di awal tahun 2026 dan Rp831 juta di awal April tadi dari produk apa?</p>
+    <p class="reveal__callback">Penasaran Rp2,51 Miliar di awal tahun 2026 dan Rp831 juta di awal April tadi dari produk apa?</p>
 
     <img src="/assets/img/Produk_April.webp" alt="Komposisi penjualan produk April 2026" class="hero__screenshot" loading="lazy" width="879" height="528">
 
@@ -266,9 +283,62 @@
       Bareng 41.999 produk lain yang bisa kamu miliki aksesnya tanpa harus bayar tiap bulan.</p>
     </div>
 
-    <a href="https://lynk.id/emcommerce/BORXZyd" class="btn btn--primary" id="revealCta" role="button">
-      Akses Database 42.000 Produk - Rp69.300
-    </a>
+    <!-- ===== DATABASE LIST (dari kolom aktual Database_Shopee.xlsx) ===== -->
+    <div class="db-list-section" aria-label="Data yang tersedia di database">
+      <p class="db-list-section__title">Data yang tersedia di database:</p>
+      <div class="db-columns">
+
+        <div>
+          <p class="db-col__label">Identitas Produk</p>
+          <div class="db-col__items">
+            <span class="db-col__item">Nama produk</span>
+            <span class="db-col__item">Kategori</span>
+            <span class="db-col__item">Sub kategori</span>
+            <span class="db-col__item">Harga</span>
+            <span class="db-col__item">Stok tersedia</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="db-col__label">Performa Penjualan</p>
+          <div class="db-col__items">
+            <span class="db-col__item">Omset / bulan</span>
+            <span class="db-col__item">Omset 30 hari terakhir</span>
+            <span class="db-col__item">Terjual / bulan</span>
+            <span class="db-col__item">Terjual 30 hari terakhir</span>
+            <span class="db-col__item">Total terjual (all-time)</span>
+            <span class="db-col__item">Total omset (all-time)</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="db-col__label">Reputasi & Toko</p>
+          <div class="db-col__items">
+            <span class="db-col__item">Rating produk</span>
+            <span class="db-col__item">Jumlah ulasan</span>
+            <span class="db-col__item">Jumlah wishlist</span>
+            <span class="db-col__item">Nama toko</span>
+            <span class="db-col__item">Lokasi toko (kota/kab)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ===== END DATABASE LIST ===== -->
+
+    <!-- ===== CTA TO DEMO (NEW - moved from hero) ===== -->
+    <div class="reveal-demo-cta">
+      <p class="reveal-demo-cta__eyebrow">Semua data di atas tersedia untuk <strong>42.000+ produk</strong>.<br>Tapi kamu bisa cek dulu 50 contoh produknya - gratis.</p>
+      <a href="#gridSection" class="btn--ghost-dark" role="button">Lihat 50 contoh data produknya ↑</a>
+      <span class="reveal-demo-cta__nudge">Semua produk bisa diklik dan kamu cek langsung di Shopee.</span>
+    </div>
+    <!-- ===== END CTA TO DEMO ===== -->
+
+    <div style="margin-top:var(--space-lg)">
+      <a href="https://lynk.id/emcommerce/BORXZyd" class="btn btn--primary" id="revealCta" role="button">
+        Miliki akses ebook dan database 42rb winning product hanya dengan Rp69.300
+      </a>
+    </div>
 
   </div>
 </section>
@@ -289,7 +359,7 @@
       </li>
       <li class="value-item">
         <div class="value-item__info">
-          <p class="value-item__name">Database 42.000+ Produk Terlaris Shopee</p>
+          <p class="value-item__name">Database 42.000+ Winning Product Shopee</p>
           <p class="value-item__desc">23 kategori, 321 sub-kategori. Format Excel.</p>
         </div>
         <span class="value-item__price">Rp500.000</span>
