@@ -110,6 +110,10 @@
     .db-col__item.db-col__item--muted{color:var(--color-neutral-500);font-style:italic}
     .db-col__item.db-col__item--muted::before{background:var(--color-neutral-300)}
 
+
+    /* ===== risk free ===== */
+    .risk-free{margin-top:var(--space-lg);background:var(--color-white);border:1px solid var(--color-neutral-200);border-radius:var(--radius-lg);padding:18px 16px}.risk-free__head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.risk-free__shield{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:99px;background:rgba(16,168,74,.1);color:var(--color-success);flex-shrink:0}.risk-free__title{font-size:15px;font-weight:700;color:var(--color-neutral-900);letter-spacing:-.2px;line-height:1.3;margin:0}.risk-free__steps{list-style:none;padding:0;margin:0 0 12px;display:flex;flex-wrap:wrap;gap:6px}.risk-free__steps li{font-size:12px;font-weight:500;color:var(--color-neutral-700);background:var(--color-neutral-50);border:1px solid var(--color-neutral-200);border-radius:99px;padding:5px 11px;white-space:nowrap}.risk-free__body{font-size:13px;line-height:1.6;color:var(--color-neutral-700);margin:0}.risk-free__body a{color:var(--color-accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}.risk-free__body a:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:2px}
+    
     /* ===== CTA to demo (new) ===== */
     .reveal-demo-cta{margin-top:var(--space-lg);padding-top:var(--space-lg);border-top:1px solid var(--color-neutral-200)}
     .reveal-demo-cta__eyebrow{font-size:13px;color:var(--color-neutral-500);text-align:center;margin-bottom:var(--space-sm);line-height:1.5}
@@ -416,6 +420,29 @@
   </div>
 </section>
 
+  <!-- Risk-Free Card -->
+    <div class="risk-free" aria-label="Garansi 7 hari uang kembali">
+      <div class="risk-free__head">
+        <span class="risk-free__shield" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </span>
+        <h3 class="risk-free__title">Coba Risk-Free 7 Hari</h3>
+      </div>
+      <ul class="risk-free__steps" aria-label="Yang bisa kamu cek selama 7 hari">
+        <li>Buka file</li>
+        <li>Baca eBook</li>
+        <li>Lihat database</li>
+        <li>Cek AI Analyzer Pack</li>
+      </ul>
+      <p class="risk-free__body">
+        Kalau dalam 7 hari ngerasa ga worth Rp69.300, email ke
+        <a href="mailto:halo@emcommerce.online?subject=Refund">halo@emcommerce.online</a><br>
+        kami refund 100%.
+      </p>
+    </div>
+  </div>
+</section>
+    
 <!-- ===== SECTION 5: FAQ + FINAL CTA ===== -->
 <section class="section section--alt" aria-label="FAQ">
   <div class="container">
@@ -460,6 +487,13 @@
         <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="faq-a">Beneran. Dikirim otomatis ke email bareng file utama. Gratis untuk 100 pembeli pertama di May 2026. Setelah itu bonus dihilangkan.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        Kalau ternyata ga cocok, bisa refund?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a">Bisa. Kamu punya waktu 7 hari setelah pembelian untuk request refund. Email ke halo@emcommerce.online dengan subject "Refund [emailmu di Lynk.id]". Refund 100% (Rp69.300), diproses max 3 hari kerja.</div>
     </div>
 
     <!-- Final push -->
